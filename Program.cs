@@ -76,17 +76,17 @@ app.UseAuthorization();
 // Define the endpoints
 
 // GET: api/items
-app.MapGet("/api/items",[Authorize] async (ToDoDbContext db) =>
+app.MapGet("/api/items", [Authorize] async (ToDoDbContext db) =>
     await db.Items.ToListAsync());
 
 // GET: api/items/{id}
-app.MapGet("/api/items/{id}",[Authorize] async (int id, ToDoDbContext db) =>
+app.MapGet("/api/items/{id}", [Authorize] async (int id, ToDoDbContext db) =>
 {
     return await db.Items.FindAsync(id) is Item item ? Results.Ok(item) : Results.NotFound();
 });
 
 // POST: api/items
-app.MapPost("/api/items",[Authorize] async (Item item, ToDoDbContext db) =>
+app.MapPost("/api/items", [Authorize] async (Item item, ToDoDbContext db) =>
 {
     db.Items.Add(item);
     await db.SaveChangesAsync();
@@ -94,7 +94,7 @@ app.MapPost("/api/items",[Authorize] async (Item item, ToDoDbContext db) =>
 });
 
 // PUT: api/items/{id}
-app.MapPut("/api/items/{id}",[Authorize] async (int id, Item inputItem, ToDoDbContext db) =>
+app.MapPut("/api/items/{id}", [Authorize] async (int id, Item inputItem, ToDoDbContext db) =>
 {
     var item = await db.Items.FindAsync(id);
     if (item is null) return Results.NotFound();
@@ -107,7 +107,7 @@ app.MapPut("/api/items/{id}",[Authorize] async (int id, Item inputItem, ToDoDbCo
 });
 
 // DELETE: api/items/{id}
-app.MapDelete("/api/items/{id}",[Authorize] async (int id, ToDoDbContext db) =>
+app.MapDelete("/api/items/{id}", [Authorize] async (int id, ToDoDbContext db) =>
 {
     var item = await db.Items.FindAsync(id);
     if (item is null) return Results.NotFound();
@@ -126,7 +126,7 @@ app.MapPost("/api/login", (User loginUser, ToDoDbContext db, JwtService jwtServi
     }
 
     var token = jwtService.GenerateToken(user);
-    return Results.Ok(new { token, id=loginUser?.Id});
+    return Results.Ok(new { token, id = loginUser?.Id });
 });
 
 app.MapPost("/api/register", async (User newUser, ToDoDbContext db) =>
@@ -141,6 +141,8 @@ app.MapPost("/api/register", async (User newUser, ToDoDbContext db) =>
 
     return Results.Ok(new { message = "User registered successfully" });
 });
+
+app.MapGet("/", () => "Server is running");
 
 
 // Run the application
