@@ -46,6 +46,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<ToDoDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("ToDoDB"),
     new MySqlServerVersion(new Version(8, 0, 2))));
+    
 
 builder.Services.AddScoped<JwtService>();
 
@@ -76,8 +77,10 @@ app.UseAuthorization();
 // Define the endpoints
 
 // GET: api/items
-app.MapGet("/api/items", async (ToDoDbContext db) =>
-    await db.Items.ToListAsync());
+app.MapGet("/api/items",[Authorize] async (ToDoDbContext db) =>{
+    Console.WriteLine();
+    return await db.Items.ToListAsync();
+});
 
 // GET: api/items/{id}
 app.MapGet("/api/items/{id}", [Authorize] async (int id, ToDoDbContext db) =>
@@ -144,6 +147,8 @@ app.MapPost("/api/register", async (User newUser, ToDoDbContext db) =>
 
 app.MapGet("/", () => "Server is running");
 
+var connectionString = builder.Configuration.GetConnectionString("ToDoDB");
+Console.WriteLine($"Database Connection String: {connectionString}");
 
 // Run the application
 app.Run();
