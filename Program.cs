@@ -56,9 +56,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Use the CORS policy
-app.UseCors(MyAllowSpecificOrigins);
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -69,6 +66,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+// Use the CORS policy
+app.UseCors(MyAllowSpecificOrigins);
+
 // Enable authentication & authorization
 app.UseAuthentication();
 app.UseAuthorization();
@@ -76,7 +76,7 @@ app.UseAuthorization();
 // Define the endpoints
 
 // GET: api/items
-app.MapGet("/api/items", [Authorize] async (ToDoDbContext db) =>
+app.MapGet("/api/items", async (ToDoDbContext db) =>
     await db.Items.ToListAsync());
 
 // GET: api/items/{id}
